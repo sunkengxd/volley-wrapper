@@ -6,7 +6,7 @@ This project's goal is to make using Volley as simple as calling one function.
 
 Example usage:
 
-```
+```kotlin
 val volley = Volley.getInstance(context)
 
 volley perform Request("https://catfact.ninja")
