@@ -19,14 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
 import com.sunkengod.volleywrapper.ui.theme.VolleyWrapperTheme
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
-
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,16 +58,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    val r = remember { mutableStateOf<Response?>(null) }
-    Text(text = "Hi $name")
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     VolleyWrapperTheme {
-        Greeting("Android")
     }
 }
