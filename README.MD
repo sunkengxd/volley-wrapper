@@ -9,7 +9,11 @@ Example usage:
 ```kotlin
 val volley = Volley.getInstance(context)
 
+// infix
 volley perform Request("https://catfact.ninja")
+
+// or dot call
+volley.perform(Request("https://catfact.ninja"))
 ```
 
 You can set `onSuccess()` and `onFailure()` callback on the `Request` object to handle API responses.
