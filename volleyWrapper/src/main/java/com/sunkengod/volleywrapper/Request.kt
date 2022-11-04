@@ -49,7 +49,7 @@ class Response internal constructor(
 data class Request(
     private val destination: String,
     val method: RequestMethod = RequestMethod.GET,
-    val headers: Map<String, String> = mapOf("Content-Type" to JSON),
+    val headers: Map<String, String> = mapOf("Content-Type" to "application/json"),
     val body: JSONObject? = null,
     private val queryOptions: Map<String, String>? = null
 ) {
@@ -65,9 +65,30 @@ data class Request(
     private var _onSuccess: ((Response) -> Unit)? = null
     private var _onFailure: ((Int, VolleyError) -> Unit)? = null
 
+    /**
+     * Reference to the optional success lambda.
+     */
     val onSuccess get() = _onSuccess
+
+    /**
+     * Reference to the optional failure lambda.
+     */
     val onFailure get() = _onFailure
 
+    /**
+     * Set a onSuccess callback for this request.
+     *
+     * @param lambda The callback, receives [Response].
+     * @return Copy of the request with said callback.
+     */
     fun onSuccess(lambda: (Response) -> Unit) = this.copy().apply { _onSuccess = lambda }
+
+
+    /**
+     * Set a onFailure callback for this request.
+     *
+     * @param lambda The callback, receives [Int] status code and [VolleyError].
+     * @return Copy of the request with said callback.
+     */
     fun onFailure(lambda: (Int, VolleyError) -> Unit) = this.copy().apply { _onFailure = lambda }
 }
