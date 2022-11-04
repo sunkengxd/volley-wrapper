@@ -49,6 +49,7 @@ Volley.homeDomain = "www.example.com"
 
 val volley = Volley initialize context
 
+// GET www.example.com/countries?continent=eurasia
 volley perform Request("/countries",
     queryOptions = mapOf("continent" to "eurasia")
     .onSuccess { doSomething() }
