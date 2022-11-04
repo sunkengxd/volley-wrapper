@@ -15,7 +15,7 @@ volley perform Request("https://catfact.ninja")
 volley.perform(Request("https://catfact.ninja"))
 ```
 
-You can set `onSuccess()` and `onFailure()` callback on the `Request` object to handle API responses.
+You can set `onSuccess()` and `onFailure()` callbacks on the `Request` object to handle API responses.
 
 ### Complex requests
 
