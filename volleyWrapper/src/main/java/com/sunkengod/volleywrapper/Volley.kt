@@ -6,7 +6,7 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.NetworkResponse
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.HttpHeaderParser
-import com.sunkengod.volleywrapper.Volley.Companion.getInstance
+import com.sunkengod.volleywrapper.Volley.Companion.initialize
 import com.sunkengod.volleywrapper.Volley.Companion.homeDomain
 
 private typealias MResponse = Response
@@ -16,7 +16,7 @@ private const val TAG = "Volley Request"
 /**
  * Class for making network requests.
  *
- * @see getInstance
+ * @see initialize
  * @see homeDomain
  * @see perform
  */
@@ -82,7 +82,7 @@ class Volley private constructor(context: Context) {
          * @param context A Context to use for creating the cache dir.
          */
         @JvmStatic
-        fun getInstance(context: Context) = INSTANCE ?: synchronized(this) {
+        infix fun initialize(context: Context) = INSTANCE ?: synchronized(this) {
             INSTANCE ?: Volley(context).also {
                 INSTANCE = it
             }
