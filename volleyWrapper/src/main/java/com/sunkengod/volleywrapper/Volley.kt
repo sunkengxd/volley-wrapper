@@ -8,11 +8,10 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.HttpHeaderParser
 import com.sunkengod.volleywrapper.Volley.Companion.getInstance
 import com.sunkengod.volleywrapper.Volley.Companion.homeDomain
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.coroutineScope
 
 private typealias MResponse = Response
+
+private const val TAG = "Volley Request"
 
 /**
  * Class for making network requests.
@@ -68,21 +67,20 @@ class Volley private constructor(context: Context) {
      * @param request [Request] object.
      */
     infix fun perform(request: Request) {
-        val volleyRequest = object : com.android.volley.Request<Response>(request.method.key,
-                                                                          request.url,
-                                                                          com.android.volley.Response.ErrorListener {
-                                                                              val code = it.networkResponse.statusCode
-                                                                              val data = String(it.networkResponse.data)
-                                                                              if(log) Log.e("VolleyRequest",
-                                                                              "URL: ${request.url}\n" +
-                                                                                      "Status: $code\n" +
-                                                                                      "Data: $data\n" +
-                                                                                      "Message: ${it.message}")
-                                                                              request.onFailure?.invoke(
-                                                                                  code,
-                                                                                  it
-                                                                              )
-                                                                          }) {
+        val volleyRequest = object : com.android.volley.Request<Response>(
+            request.method.key,
+            request.url,
+            com.android.volley.Response.ErrorListener {
+                val code = it.networkResponse.statusCode
+                val data = String(it.networkResponse.data)
+                if(log) Log.e(
+                    TAG,
+                    "URL: ${request.url}\n" + "Status: $code\n" + "Data: $data\n" + "Message: ${it.message}"
+                )
+                request.onFailure?.invoke(
+                    code, it
+                )
+            }) {
             override fun getHeaders() = HashMap(request.headers)
 
             override fun getUrl() = if(homeDomain.isEmpty()) request.url
@@ -104,7 +102,6 @@ class Volley private constructor(context: Context) {
                     request.onSuccess?.invoke(response)
                 }
             }
-
         }
         volleyRequest.retryPolicy = DefaultRetryPolicy(
             DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 5,
@@ -114,8 +111,7 @@ class Volley private constructor(context: Context) {
 
         queue.add(volleyRequest).also {
             if(log) Log.d(
-                "VolleyRequest",
-                "URL: ${it.url}\n" + "HEAD: ${it.headers}\n" + "BODY: ${String(it.body)}"
+                TAG, "URL: ${it.url}\n" + "HEAD: ${it.headers}\n" + "BODY: ${String(it.body)}"
             )
         }
     }
