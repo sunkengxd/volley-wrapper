@@ -24,7 +24,39 @@ class Volley private constructor(context: Context) {
 
     companion object {
 
+        /**
+         * Sets whether requests are logged or not.
+         * If true, logs whenever a [Request] is added to the queue and if an error occurs.
+         */
         var log = false
+
+        /**
+         * Timeout milliseconds multiplier for [DefaultRetryPolicy.DEFAULT_TIMEOUT_MS]. Used to set a socket timeout per retry attempt.
+         *
+         * @see additionalRetries
+         * @see backoffMultiplier
+         */
+        var timeoutMsMultiplier = 5
+
+        /**
+         * Additional retries. Added to [DefaultRetryPolicy.DEFAULT_MAX_RETRIES]. Number of times a retry is attempted.
+         *
+         * @see timeoutMsMultiplier
+         * @seebackoffMultiplier
+         */
+        var additionalRetries = 1
+
+        /**
+         * Backoff multiplier. Timeout multiplier.
+         *```
+         * timeout = 250 * timeoutMsMultiplier
+         * socketTimeout = timeout + timeout * backoffMultiplier
+         * ```
+         *
+         * @see timeoutMsMultiplier
+         * @see additionalRetries
+         */
+        var backoffMultiplier = DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
 
         /**
          * A URL appended to all requests
@@ -104,9 +136,9 @@ class Volley private constructor(context: Context) {
             }
         }
         volleyRequest.retryPolicy = DefaultRetryPolicy(
-            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 5,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES + 1,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * timeoutMsMultiplier,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES + additionalRetries,
+            backoffMultiplier
         )
 
         queue.add(volleyRequest).also {
