@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    val volley = Volley.getInstance(this)
+                    val volley = Volley initialize this
 
                     val r = remember { mutableStateOf<Response?>(null) }
                     Button(modifier = Modifier
