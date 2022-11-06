@@ -22,8 +22,8 @@ dependencyResolutionManagement {
 2. Add the following to your module's `build.gradle`:
 ```gradle
 dependencies {
-	        implementation 'com.github.sunkengxd:volley-wrapper:Tag'
-	}
+    implementation 'com.github.sunkengxd:volley-wrapper:Tag'
+}
 ```
 
 ### Example usage:
