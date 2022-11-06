@@ -23,28 +23,22 @@ class Response internal constructor(
     /**
      * Get response body as a [JSONObject].
      */
-    val json by lazy { JSONObject(string) }
+    val json by lazy { kotlin.runCatching { JSONObject(string) }.getOrNull() }
 
     /**
      * Get response body as a formatted JSON [String].
      */
-    val pretty: String by lazy { JSONObject(string).toString(4) }
+    val pretty: String? by lazy { json?.toString(4) }
 }
 
 /**
  * Class for building network requests using [Volley].
  *
- * @see destination
- * @see method
- * @see headers
- * @see body
- * @see queryOptions
- *
- * @property destination URL where to send the request. Set a [Volley.homeDomain] or supply a full URL.
- * @property method [RequestMethod] to be performed.
- * @property headers HEAD contents.
- * @property body BODY contents
- * @property queryOptions Map which will be formatted and appended to URL.
+ * @param destination URL where to send the request. Set a [Volley.homeDomain] or supply a full URL.
+ * @param method [RequestMethod] to be performed.
+ * @param headers Request head contents.
+ * @param body Request body contents.
+ * @param queryOptions Map which will be formatted and appended to URL.
  */
 data class Request(
     private val destination: String,
@@ -82,7 +76,6 @@ data class Request(
      * @return Copy of the request with said callback.
      */
     fun onSuccess(lambda: (Response) -> Unit) = this.copy().apply { _onSuccess = lambda }
-
 
     /**
      * Set a onFailure callback for this request.

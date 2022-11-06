@@ -16,9 +16,19 @@ private const val TAG = "Volley Request"
 /**
  * Class for making network requests.
  *
+ * Usage:
+ * ```
+ *      // somewhere in your code
+ *      val volley = Volley initialize context
+ *      volley perform Request(url)
+ *          .onSuccess { doSomething() }
+ *          .onFailure { doSomethingElse() }
+ * ```
  * @see initialize
  * @see homeDomain
  * @see perform
+ * @see log
+ * @see timeoutMsMultiplier
  */
 class Volley private constructor(context: Context) {
 
@@ -42,7 +52,7 @@ class Volley private constructor(context: Context) {
          * Additional retries. Added to [DefaultRetryPolicy.DEFAULT_MAX_RETRIES]. Number of times a retry is attempted.
          *
          * @see timeoutMsMultiplier
-         * @seebackoffMultiplier
+         * @see backoffMultiplier
          */
         var additionalRetries = 1
 
@@ -104,7 +114,7 @@ class Volley private constructor(context: Context) {
             request.url,
             com.android.volley.Response.ErrorListener {
                 val code = it.networkResponse.statusCode
-                val data = String(it.networkResponse.data)
+                val data = it.networkResponse.data
                 if(log) Log.e(
                     TAG,
                     "URL: ${request.url}\n" + "Status: $code\n" + "Data: $data\n" + "Message: ${it.message}"
