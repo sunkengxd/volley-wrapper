@@ -13,7 +13,7 @@ This project's goal is to make using Volley as simple as calling one function.
 ```gradle
 dependencyResolutionManagement {
     repositories {
-        ...
+        ..
         maven { url 'https://jitpack.io' }
     }
 }
@@ -42,7 +42,7 @@ You can set `onSuccess()` and `onFailure()` callbacks on the `Request` object to
 
 #### Complex requests
 
-- ##### Perform a POST request
+Perform a POST request
 
 ```kotlin
 // set default domain
@@ -63,7 +63,7 @@ volley perform Request("users",
     .onFailure { doSomethingElse() }
 ```
 
-- ##### Perform a GET with query options
+Perform a GET with query options
 
 ```kotlin
 // set default domain
