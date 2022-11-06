@@ -3,6 +3,29 @@
 
 This project's goal is to make using Volley as simple as calling one function.
 
+### Contents
+1. [Installation](#installation)
+2. [Usage](#example-usage)
+3. [Properties](#properties)
+
+### Installation
+1. Add the following to your project's `settings.gradle`:
+```gradle
+dependencyResolutionManagement {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+2. Add the following to your module's `build.gradle`:
+```gradle
+dependencies {
+	        implementation 'com.github.sunkengxd:volley-wrapper:Tag'
+	}
+```
+
 ### Example usage:
 
 ```kotlin
@@ -17,9 +40,9 @@ volley.perform(Request("https://catfact.ninja/fact"))
 
 You can set `onSuccess()` and `onFailure()` callbacks on the `Request` object to handle API responses.
 
-### Complex requests
+#### Complex requests
 
-Perform a POST request
+- ##### Perform a POST request
 
 ```kotlin
 // set default domain
@@ -39,9 +62,8 @@ volley perform Request("users",
     .onSuccess { doSomething() }
     .onFailure { doSomethingElse() }
 ```
----
 
-Perform a GET with query options
+- ##### Perform a GET with query options
 
 ```kotlin
 // set default domain
