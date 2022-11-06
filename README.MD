@@ -9,10 +9,10 @@ This project's goal is to make using Volley as simple as calling one function.
 val volley = Volley.initialize(context)
 
 // infix
-volley perform Request("https://catfact.ninja")
+volley perform Request("https://catfact.ninja/fact")
 
 // or dot call
-volley.perform(Request("https://catfact.ninja"))
+volley.perform(Request("https://catfact.ninja/fact"))
 ```
 
 You can set `onSuccess()` and `onFailure()` callbacks on the `Request` object to handle API responses.
@@ -54,4 +54,16 @@ volley perform Request("/countries",
     queryOptions = mapOf("continent" to "eurasia")
     .onSuccess { doSomething() }
     .onFailure { doSomethingElse() }
+```
+---
+
+### Properties
+- `log` — Sets whether requests are logged or not. If true, logs whenever a [Request] is added to the queue and if an error occurs.
+- `homeDomain` — A URL appended to all requests.
+- `timeoutMsMultiplier` — Used to set a socket timeout per retry attempt.
+- `additionalRetries` — Number of times a retry is attempted.
+- `backoffMultiplier` — Used to calculate socket timeout as listed below:
+```python
+timeout = 250 * timeoutMsMultiplier
+socketTimeout = timeout + timeout * backoffMultiplier
 ```

@@ -41,7 +41,7 @@ class Volley private constructor(context: Context) {
         var log = false
 
         /**
-         * Timeout milliseconds multiplier for [DefaultRetryPolicy.DEFAULT_TIMEOUT_MS]. Used to set a socket timeout per retry attempt.
+         * Milliseconds multiplier for [DefaultRetryPolicy.DEFAULT_TIMEOUT_MS]. Used to set a socket timeout per retry attempt.
          *
          * @see additionalRetries
          * @see backoffMultiplier
@@ -49,7 +49,7 @@ class Volley private constructor(context: Context) {
         var timeoutMsMultiplier = 5
 
         /**
-         * Additional retries. Added to [DefaultRetryPolicy.DEFAULT_MAX_RETRIES]. Number of times a retry is attempted.
+         * Gets added to [DefaultRetryPolicy.DEFAULT_MAX_RETRIES]. Number of times a retry is attempted.
          *
          * @see timeoutMsMultiplier
          * @see backoffMultiplier
@@ -57,7 +57,7 @@ class Volley private constructor(context: Context) {
         var additionalRetries = 1
 
         /**
-         * Backoff multiplier. Timeout multiplier.
+         * Is used to calculate socket timeout as listed below:
          *```
          * timeout = 250 * timeoutMsMultiplier
          * socketTimeout = timeout + timeout * backoffMultiplier
@@ -69,7 +69,7 @@ class Volley private constructor(context: Context) {
         var backoffMultiplier = DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
 
         /**
-         * A URL appended to all requests
+         * A URL appended to all requests.
          *
          * Example usage:
          * ```
