@@ -111,6 +111,7 @@ object Volley {
      * Perform network requests
      *
      * @param request [Request] object.
+     * @throws UninitializedPropertyAccessException
      */
     infix fun perform(request: Request) {
         if(!Parameters.appInitialized) throw UninitializedPropertyAccessException("Volley is not provided an app instance. Invoke `Volley { application = yourApplication }` or see usage.")
