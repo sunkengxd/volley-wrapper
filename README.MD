@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 2. Add the following to your module's `build.gradle`:
 ```gradle
 dependencies {
-    implementation 'com.github.sunkengxd:volley-wrapper:1.1.0'
+    implementation 'com.github.sunkengxd:volley-wrapper:1.2.0'
 }
 ```
 
