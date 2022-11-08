@@ -1,39 +1,56 @@
 package com.sunkengod.volleywrapper
 
-import android.content.Context
+import android.app.Application
 import android.util.Log
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.NetworkResponse
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.HttpHeaderParser
-import com.sunkengod.volleywrapper.Volley.Companion.initialize
-import com.sunkengod.volleywrapper.Volley.Companion.homeDomain
+import com.sunkengod.volleywrapper.Volley.perform
 
 private typealias MResponse = Response
 
 private const val TAG = "Volley Request"
 
 /**
- * Class for making network requests.
+ * Object for making network requests.
  *
  * Usage:
  * ```
- *      // somewhere in your code
- *      val volley = Volley initialize context
- *      volley perform Request(url)
+ *      // provide application instance
+ *      Volley {
+ *          this.application = application
+ *          // other parameters
+ *      }
+ *
+ *      // anywhere in your app
+ *      Volley perform Request(url)
  *          .onSuccess { doSomething() }
  *          .onFailure { doSomethingElse() }
  * ```
- * @see initialize
- * @see homeDomain
- * @see perform
- * @see log
- * @see timeoutMsMultiplier
+ *
+ * @see Parameters
  */
-class Volley private constructor(context: Context) {
+object Volley {
 
-    companion object {
+    /**
+     * Object containing various volley parameters.
+     *
+     * @see baseUrl
+     * @see perform
+     * @see log
+     * @see timeoutMsMultiplier
+     */
+    object Parameters {
 
+        /**
+         * Application instance to provide via invoking Volley.
+         *
+         * @see Volley
+         */
+        lateinit var app: Application
+
+        internal val appInitialized get() = ::app.isInitialized
         /**
          * Sets whether requests are logged or not.
          * If true, logs whenever a [Request] is added to the queue and if an error occurs.
@@ -78,29 +95,16 @@ class Volley private constructor(context: Context) {
          * ```
          * will send GET to www.example.com/example
          */
-        var homeDomain = ""
+        var baseUrl = ""
             set(value) {
                 field = value.removeSuffix("/")
             }
-
-        @Volatile
-        private var INSTANCE: Volley? = null
-
-        /**
-         * Use this to initialize the Volley singleton with a context.
-         *
-         * @param context A Context to use for creating the cache dir.
-         */
-        @JvmStatic
-        infix fun initialize(context: Context) = INSTANCE ?: synchronized(this) {
-            INSTANCE ?: Volley(context).also {
-                INSTANCE = it
-            }
-        }
     }
 
+    operator fun invoke(block: Parameters.() -> Unit) = block(Parameters)
+
     private val queue: RequestQueue by lazy {
-        com.android.volley.toolbox.Volley.newRequestQueue(context.applicationContext)
+        com.android.volley.toolbox.Volley.newRequestQueue(Parameters.app)
     }
 
     /**
@@ -109,24 +113,25 @@ class Volley private constructor(context: Context) {
      * @param request [Request] object.
      */
     infix fun perform(request: Request) {
-        val volleyRequest = object : com.android.volley.Request<Response>(
-            request.method.key,
-            request.url,
-            com.android.volley.Response.ErrorListener {
-                val code = it.networkResponse.statusCode
-                val data = it.networkResponse.data
-                if(log) Log.e(
-                    TAG,
-                    "URL: ${request.url}\n" + "Status: $code\n" + "Data: $data\n" + "Message: ${it.message}"
-                )
-                request.onFailure?.invoke(
-                    code, it
-                )
-            }) {
+        if(!Parameters.appInitialized) throw UninitializedPropertyAccessException("Volley is not provided an app instance. Invoke `Volley { application = yourApplication }` or see usage.")
+        val volleyRequest = object : com.android.volley.Request<Response>(request.method.key,
+                                                                          request.url,
+                                                                          com.android.volley.Response.ErrorListener {
+                                                                              val code = it.networkResponse.statusCode
+                                                                              val data =
+                                                                                  it.networkResponse.data.toString()
+                                                                              if(Parameters.log) Log.e(
+                                                                                  TAG,
+                                                                                  "URL: ${request.url}\n" + "Status: $code\n" + "Data: $data\n" + "Message: ${it.message}"
+                                                                              )
+                                                                              request.onFailure?.invoke(
+                                                                                  code, data
+                                                                              )
+                                                                          }) {
             override fun getHeaders() = HashMap(request.headers)
 
-            override fun getUrl() = if(homeDomain.isEmpty()) request.url
-            else homeDomain + if(request.url.startsWith("/")) request.url else "/${request.url}"
+            override fun getUrl() = if(Parameters.baseUrl.isEmpty()) request.url
+            else Parameters.baseUrl + if(request.url.startsWith("/")) request.url else "/${request.url}"
 
             override fun getBody() = request.body.toString().toByteArray()
 
@@ -146,13 +151,13 @@ class Volley private constructor(context: Context) {
             }
         }
         volleyRequest.retryPolicy = DefaultRetryPolicy(
-            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * timeoutMsMultiplier,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES + additionalRetries,
-            backoffMultiplier
+            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * Parameters.timeoutMsMultiplier,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES + Parameters.additionalRetries,
+            Parameters.backoffMultiplier
         )
 
         queue.add(volleyRequest).also {
-            if(log) Log.d(
+            if(Parameters.log) Log.d(
                 TAG, "URL: ${it.url}\n" + "HEAD: ${it.headers}\n" + "BODY: ${String(it.body)}"
             )
         }

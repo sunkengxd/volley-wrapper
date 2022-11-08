@@ -28,14 +28,27 @@ dependencies {
 
 ### Example usage:
 
+1. Set Volley parameters somewhere in your application:
 ```kotlin
-val volley = Volley.initialize(context)
+Volley {
+    // in MainApplication class
+    app = application
+    // in Activity
+    app = context.applicationContext
 
+    log = true
+    baseUrl = "https://example.com"
+    // other parameters
+}
+```
+
+2. Done! Now do :
+```kotlin
 // infix
-volley perform Request("https://catfact.ninja/fact")
+Volley perform Request("https://catfact.ninja/fact")
 
 // or dot call
-volley.perform(Request("https://catfact.ninja/fact"))
+Volley.perform(Request("https://catfact.ninja/fact"))
 ```
 
 You can set `onSuccess()` and `onFailure()` callbacks on the `Request` object to handle API responses.
@@ -45,11 +58,8 @@ You can set `onSuccess()` and `onFailure()` callbacks on the `Request` object to
 Perform a POST request
 
 ```kotlin
-// set default domain
-Volley.homeDomain = "www.example.com"
-
-// supports infix notation as well
-val volley = Volley initialize context
+// if at some point you desire to change your parameters do this
+Volley.Parameters.baseUrl = "https://example.com"
 
 // url '/' prefix is not mandatory
 volley perform Request("users",
@@ -66,11 +76,6 @@ volley perform Request("users",
 Perform a GET with query options
 
 ```kotlin
-// set default domain
-Volley.homeDomain = "www.example.com"
-
-val volley = Volley initialize context
-
 // GET www.example.com/countries?continent=eurasia
 volley perform Request("/countries",
     queryOptions = mapOf("continent" to "eurasia")
@@ -81,11 +86,11 @@ volley perform Request("/countries",
 
 ### Properties
 - `log` — Sets whether requests are logged or not. If true, logs whenever a [Request] is added to the queue and if an error occurs.
-- `homeDomain` — A URL appended to all requests.
+- `baseUrl` — A URL appended to all requests.
 - `timeoutMsMultiplier` — Used to set a socket timeout per retry attempt.
 - `additionalRetries` — Number of times a retry is attempted.
 - `backoffMultiplier` — Used to calculate socket timeout as listed below:
-```python
-timeout = 250 * timeoutMsMultiplier
-socketTimeout = timeout + timeout * backoffMultiplier
+```kotlin
+val timeout = 250 * timeoutMsMultiplier
+val socketTimeout = timeout + timeout * backoffMultiplier
 ```

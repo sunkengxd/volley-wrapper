@@ -26,15 +26,18 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Volley.homeDomain = "https://catfact.ninja"
-        Volley.log = true
+        Volley {
+            app = application
+            baseUrl = "https://catfact.ninja"
+            log = true
+        }
+
         setContent {
             VolleyWrapperTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    val volley = Volley initialize this
 
                     val r = remember { mutableStateOf<Response?>(null) }
                     Button(modifier = Modifier
@@ -42,7 +45,7 @@ class MainActivity : ComponentActivity() {
                         .padding(30.dp)
                         .animateContentSize(),
                            onClick = {
-                               volley perform Request("fact").onSuccess { r.value = it }
+                               Volley perform Request("fact").onSuccess { r.value = it }
                            }) {
                         AnimatedContent(targetState = r) {
                             Text(

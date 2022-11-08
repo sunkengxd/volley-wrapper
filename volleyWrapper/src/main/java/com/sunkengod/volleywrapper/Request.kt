@@ -57,7 +57,7 @@ data class Request(
     } else ""
 
     private var _onSuccess: ((Response) -> Unit)? = null
-    private var _onFailure: ((Int, VolleyError) -> Unit)? = null
+    private var _onFailure: ((Int, String) -> Unit)? = null
 
     /**
      * Reference to the optional success lambda.
@@ -83,5 +83,5 @@ data class Request(
      * @param lambda The callback, receives [Int] status code and [VolleyError].
      * @return Copy of the request with said callback.
      */
-    fun onFailure(lambda: (Int, VolleyError) -> Unit) = this.copy().apply { _onFailure = lambda }
+    fun onFailure(lambda: (Int, String) -> Unit) = this.copy().apply { _onFailure = lambda }
 }
